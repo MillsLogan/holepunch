@@ -22,7 +22,6 @@ class Cell:
     def punch(self):
         self.is_punched = True
 
-        
     def __repr__(self):
         return f"Cell(origin={self.origin}, location={self.locations}, is_punched={self.is_punched})"
     
