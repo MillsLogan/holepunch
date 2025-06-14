@@ -25,22 +25,22 @@ export default class Paper {
 
         for (const cell of this.cells) {
             const oldRepresentation = cell.getLastRepresentation();
-            const reflectedPoint = oldRepresentation.point.reflectAcrossFold(fold);
+            const newRepresentation = oldRepresentation.reflectAcrossFold(fold, Math.pow(2, this.folds.length+1));
 
             if (fold.isHorizontal) {
-                const [isValidFold, pointsMoved] = this.#checkHorizontalFold(fold, reflectedPoint, oldRepresentation);
+                const [isValidFold, pointsMoved] = this.#checkHorizontalFold(fold, newRepresentation, oldRepresentation);
                 if (!isValidFold) {
                     return false; // Invalid fold, point is out of bounds
                 }
                 isValid += pointsMoved;
             } else if (fold.isVertical) {
-                const [isValidFold, pointsMoved] = this.#checkVerticalFold(fold, reflectedPoint, oldRepresentation);
+                const [isValidFold, pointsMoved] = this.#checkVerticalFold(fold, newRepresentation, oldRepresentation);
                 if (!isValidFold) {
                     return false; // Invalid fold, point is out of bounds
                 }
                 isValid += pointsMoved;
             } else {
-                const [isValidFold, pointsMoved] = this.#checkDiagonalFold(fold, reflectedPoint, oldRepresentation);
+                const [isValidFold, pointsMoved] = this.#checkDiagonalFold(fold, newRepresentation, oldRepresentation);
                 if (!isValidFold) {
                     return false; // Invalid fold, point is out of bounds
                 }
@@ -50,17 +50,17 @@ export default class Paper {
         return isValid > 0; // At least one point must be valid;
     }
 
-    #checkHorizontalFold(fold, reflectedPoint, oldRepresentation) {
+    #checkHorizontalFold(fold, newRepresentation, oldRepresentation) {
         // Alias for downward fold
         if (fold.leftFold) {
-            if (reflectedPoint.y < oldRepresentation.point.y) {
-                return [!(reflectedPoint.y < 0 || reflectedPoint.y > 3), 1];
+            if (newRepresentation.center.y < oldRepresentation.center.y) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             } else {
                 return [true, 0];
             }
         } else {
-            if (reflectedPoint.y > oldRepresentation.point.y) {
-                return [!(reflectedPoint.y < 0 || reflectedPoint.y > 3), 1];
+            if (newRepresentation.center.y > oldRepresentation.center.y) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             }
             else {
                 return [true, 0];
@@ -68,35 +68,35 @@ export default class Paper {
         }
     }
 
-    #checkVerticalFold(fold, reflectedPoint, oldRepresentation) {
+    #checkVerticalFold(fold, newRepresentation, oldRepresentation) {
         // Alias for left fold
         if (fold.leftFold) {
-            if (reflectedPoint.x < oldRepresentation.point.x) {
-                return [!(reflectedPoint.x < 0 || reflectedPoint.x > 3), 1];
+            if (newRepresentation.center.x < oldRepresentation.center.x) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             }
             else {
                 return [true, 0];
             }
         }
         else {
-            if (reflectedPoint.x > oldRepresentation.point.x) {
-                return [!(reflectedPoint.x < 0 || reflectedPoint.x > 3), 1];
+            if (newRepresentation.center.x > oldRepresentation.center.x) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             } else {
                 return [true, 0];
             }
         }
     }
 
-    #checkDiagonalFold(fold, reflectedPoint, oldRepresentation) {
+    #checkDiagonalFold(fold, newRepresentation, oldRepresentation) {
         if (fold.leftFold) {
-            if (reflectedPoint.x < oldRepresentation.point.x) {
-                return [!((reflectedPoint.y < 0 || reflectedPoint.y > 3) || (reflectedPoint.x < 0 || reflectedPoint.x > 3)), 1];
+            if (newRepresentation.center.x < oldRepresentation.center.x) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             } else {
                 return [true, 0];
             }
         } else {
-            if (reflectedPoint.x > oldRepresentation.point.x) {
-                return [!((reflectedPoint.y < 0 || reflectedPoint.y > 3) || (reflectedPoint.x < 0 || reflectedPoint.x > 3)), 1];
+            if (newRepresentation.center.x > oldRepresentation.center.x) {
+                return [!(newRepresentation.isOutOfBounds()), 1];
             } else {
                 return [true, 0];
             }
@@ -118,30 +118,29 @@ export default class Paper {
     #performFold(fold) {
         for (const cell of this.cells) {
             const oldRepresentation = cell.getLastRepresentation();
-            const reflectedPoint = oldRepresentation.point.reflectAcrossFold(this.folds.at(-1));
-
+            const newRepresentation = oldRepresentation.reflectAcrossFold(this.folds.at(-1), Math.pow(2, this.folds.length));
             if (fold.isHorizontal) {
-                cell.addRepresentation(this.#performHorizontalFold(fold, reflectedPoint, oldRepresentation));
+                cell.addRepresentation(this.#performHorizontalFold(fold, newRepresentation, oldRepresentation));
             } else if (fold.isVertical) {
-                cell.addRepresentation(this.#performVerticalFold(fold, reflectedPoint, oldRepresentation));
+                cell.addRepresentation(this.#performVerticalFold(fold, newRepresentation, oldRepresentation));
             } else {
-                cell.addRepresentation(this.#performDiagonalFold(fold, reflectedPoint, oldRepresentation));
+                cell.addRepresentation(this.#performDiagonalFold(fold, newRepresentation, oldRepresentation));
             }
         }
     }
 
 
-    #performHorizontalFold(fold, reflectedPoint, oldRepresentation) {
+    #performHorizontalFold(fold, newRepresentation, oldRepresentation) {
         // Alias for downward fold
         if (fold.leftFold) {
-            if (reflectedPoint.y < oldRepresentation.point.y) {
-                return new CellRepresentation(reflectedPoint, Orientation.HorizontalFlip(oldRepresentation.orientation), false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.y < oldRepresentation.center.y) {
+                return newRepresentation;
             } else {
                 return oldRepresentation;
             }
         } else {
-            if (reflectedPoint.y > oldRepresentation.point.y) {
-                return new CellRepresentation(reflectedPoint, Orientation.HorizontalFlip(oldRepresentation.orientation), false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.y > oldRepresentation.center.y) {
+                return newRepresentation;
             }
             else {
                 return oldRepresentation;
@@ -149,66 +148,43 @@ export default class Paper {
         }
     }
 
-    #performVerticalFold(fold, reflectedPoint, oldRepresentation) {
+    #performVerticalFold(fold, newRepresentation, oldRepresentation) {
         // Alias for left fold
         if (fold.leftFold) {
-            if (reflectedPoint.x < oldRepresentation.point.x) {
-                return new CellRepresentation(reflectedPoint, Orientation.VerticalFlip(oldRepresentation.orientation), false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.x < oldRepresentation.center.x) {
+                return newRepresentation;
             } else {
                 return oldRepresentation;
             }
         } else {
-            if (reflectedPoint.x > oldRepresentation.point.x) {
-                return new CellRepresentation(reflectedPoint, Orientation.VerticalFlip(oldRepresentation.orientation), false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.x > oldRepresentation.center.x) {
+                return newRepresentation;
             } else {
                 return oldRepresentation;
             }
         }
     }
 
-    #performDiagonalFold(fold, reflectedPoint, oldRepresentation) {
+    #performDiagonalFold(fold, newRepresentation, oldRepresentation) {
         if (fold.leftFold) {
-            if (reflectedPoint.x === oldRepresentation.point.x) {
-                if (fold.slope < 0) {
-                    return new CellRepresentation(reflectedPoint, Orientation.TOP_LEFT, true, this.#findNewZIndex(oldRepresentation.zIndexArray, true));
-                } else {
-                    return new CellRepresentation(reflectedPoint, Orientation.BOTTOM_LEFT, true, this.#findNewZIndex(oldRepresentation.zIndexArray, true));
-                }
-            } else if (reflectedPoint.x < oldRepresentation.point.x) {
-                return new CellRepresentation(reflectedPoint, oldRepresentation.Orientation, false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.x <= oldRepresentation.center.x) {
+                return newRepresentation;
             } else {
                 return oldRepresentation;
             }
         } else {
-            if (reflectedPoint.x === oldRepresentation.point.x) {
-                if (fold.slope < 0) {
-                    return new CellRepresentation(reflectedPoint, Orientation.BOTTOM_RIGHT, true, this.#findNewZIndex(oldRepresentation.zIndexArray, true));
-                } else {
-                    return new CellRepresentation(reflectedPoint, Orientation.TOP_RIGHT, true, this.#findNewZIndex(oldRepresentation.zIndexArray, true));
-                }
-            } else if (reflectedPoint.x > oldRepresentation.point.x) {
-                return new CellRepresentation(reflectedPoint, oldRepresentation.Orientation, false, this.#findNewZIndex(oldRepresentation.zIndexArray));
+            if (newRepresentation.center.x >= oldRepresentation.center.x) {
+                return newRepresentation
             } else {
                 return oldRepresentation;
             }
         }
     }
 
-    #findNewZIndex(oldZIndexArray, isHalved=false) {
-        const maxZIndex = Math.pow(2, this.folds.length);
-        if (oldZIndexArray.length === 2) {
-            return [maxZIndex - oldZIndexArray[0] - 1, maxZIndex - oldZIndexArray[1] - 1];
-        } else if (isHalved) {
-            return [oldZIndexArray[0], maxZIndex - oldZIndexArray[0] - 1];
-        }
-        else {
-            return [maxZIndex - oldZIndexArray[0] - 1];
-        }
-    }
 
     punch(point) {
         for (const cell of this.cells) {
-            if (cell.getLastRepresentation().point.equals(point)) {
+            if (cell.getLastRepresentation().center.equals2D(point)) {
                 cell.punch();
             }
         }
@@ -222,10 +198,10 @@ export default class Paper {
         const cellsAtFold = {};
         for (const cell of this.cells) {
             const representation = cell.getRepresentationAt(foldIndex);
-            if (!cellsAtFold[representation.point]) {
-                cellsAtFold[representation.point.toString()] = [];
+            if (!cellsAtFold[representation.center.toString()]) {
+                cellsAtFold[representation.center.toString()] = [];
             }
-            cellsAtFold[representation.point.toString()].push([cell.isPunched, representation]);
+            cellsAtFold[representation.center.toString()].push([cell.isPunched, representation]);
         }
         return cellsAtFold;
     }

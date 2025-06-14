@@ -106,7 +106,7 @@ export default function FoldControls({ onFold, isFoldDisabled }) {
                     </div>
                 </div>
                 {/* Third column: Right diagonal folds */}
-                <div className="right-diagonal-fold-options mx-auto row gy-5">
+                <div className="right-diagonal-fold-options justify-content-between row gy-5 mx-auto">
                     <div>
                         <FoldButton
                             leftFold = {Fold.DiagonalFold(true, new Point(2, 0), new Point(3, 1))}

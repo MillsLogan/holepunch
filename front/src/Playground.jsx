@@ -16,9 +16,10 @@ export default function Playground() {
     const [punched, setPunched] = useState(false);
     const [punchCount, setPunchCount] = useState(0); // Used to update the model
     const maxFolds = 4;
+    const [showHistory, setShowHistory] = useState(false);
 
     function punchButtonDisableMap(point) {
-        const cellsAtPoint = paper.cells.filter(cell => cell.getLastRepresentation().point.x === point.x && cell.getLastRepresentation().point.y === point.y);
+        const cellsAtPoint = paper.cells.filter(cell => cell.getLastRepresentation().center.x === point.x && cell.getLastRepresentation().center.y === point.y);
         if (cellsAtPoint.length > 0) {
             return cellsAtPoint.some(cell => cell.getLastRepresentation().punched);
         } else {
@@ -65,7 +66,7 @@ export default function Playground() {
                         isFoldDisabled={isFoldValid}
                     />
                 </div>
-                <div className="col-5">
+                <div className="col-5 align-self-top mt-5">
                     <h2>Current Paper</h2>
                     <PaperRepresentation paper={paper} foldIndex={currentFold} />
                     <div className="row justify-content-center mx-5">
@@ -82,21 +83,40 @@ export default function Playground() {
                         }
                         } disabled={currentFold === foldCount}><ArrowBigRight size={40}/></button>
                         <button className="reset-btn col-10 mt-2" onClick={reset}>Reset</button>
-                        <div className="row justify-content-center mt-5 mb-5">
-                            <FoldHistoryCell paper={paper} foldIndex={1}/>
-                            <FoldHistoryCell paper={paper} foldIndex={2}/>
-                            <FoldHistoryCell paper={paper} foldIndex={3}/>
-                        </div>
                     </div>
                 </div>
-                <div className="col-4 align-items-center align-self-top">
+                <div className="col-2 align-items-center align-self-top">
                     <PunchControls
                         punchFunction={punch}
                         disabledMap={punchButtonDisableMap}
                     />
                 </div>
+                
+                <div className="col-2 align-self-top mt-5">
+                    <div className="row cols-2 justify-content-center mb-5 border-start">
+                        <h2>Folds History</h2>
+                        <hr/>
+                        <button className="history-btn btn btn-primary mb-3 col-8" onClick={() => setShowHistory(!showHistory)}>
+                            {showHistory ? "Hide Punches" : "Display Punches"}
+                        </button>
+                        <div className="row justify-content-center">
+                            <FoldHistoryCell paper={paper} foldIndex={0} showPunches={showHistory}/>
+                        </div>
+                        <div className="row justify-content-center">
+                            <FoldHistoryCell paper={paper} foldIndex={1} showPunches={showHistory}/>
+                        </div>
+                        <div className="row justify-content-center">
+                            <FoldHistoryCell paper={paper} foldIndex={2} showPunches={showHistory}/> 
+                        </div>
+                        <div className="row justify-content-center">
+                            <FoldHistoryCell paper={paper} foldIndex={3} showPunches={showHistory}/>
+                        </div>
+                        <div className="row justify-content-center">
+                            <FoldHistoryCell paper={paper} foldIndex={4} showPunches={showHistory}/>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
         </div>
         </>
         );
