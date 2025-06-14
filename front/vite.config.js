@@ -5,11 +5,11 @@ import { resolve } from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/hole-punchle/',
   build: {
     root: './src',
     outDir: '../docs',
     emptyOutDir: true,
-    base: '/hole-punchle/',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
