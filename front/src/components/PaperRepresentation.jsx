@@ -1,6 +1,6 @@
-import Paper from './services/models/Paper';
+import Paper from '../services/models/Paper';
 import { useRef, useEffect, useState } from 'react';
-import Point from './services/models/Point';
+import Point from '../services/models/Point';
 
 export default function PaperRepresentation({paper, foldIndex, canvasSize=500, displayPunches=true}) {
     const canvasRef = useRef(null);

@@ -1,4 +1,4 @@
-import PaperRepresentation from "../PaperRepresentation";
+import PaperRepresentation from "./PaperRepresentation";
 import { useState } from "react";
 
 export default function FoldHistoryCell({ paper, foldIndex, isActive, canvasSize=100, showPunches=false }) {

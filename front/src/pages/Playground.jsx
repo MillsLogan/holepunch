@@ -1,12 +1,12 @@
-import PaperRepresentation from "./PaperRepresentation";
-import Paper from "./services/models/Paper";
+import PaperRepresentation from "../components/PaperRepresentation.jsx";
+import Paper from "../services/models/Paper.js";
 import { useState, useCallback } from "react";
-import FoldControls from "./components/FoldControls/FoldControls.jsx";
-import PunchControls from "./components/PunchControls/PunchControls.jsx";
+import FoldControls from "../components/FoldControls/FoldControls.jsx";
+import PunchControls from "../components/PunchControls/PunchControls.jsx";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import './Playground.css';
-import FoldButtonEnum from "./components/FoldControls/FoldButtonEnum.js";
-import FoldHistoryCell from "./components/FoldHistoryCell.jsx";
+import FoldButtonEnum from "../components/FoldControls/FoldButtonEnum.js";
+import FoldHistoryCell from "../components/FoldHistoryCell.jsx";
 
 
 export default function Playground() {
