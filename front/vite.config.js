@@ -9,6 +9,7 @@ export default defineConfig({
     root: './src',
     outDir: '../docs',
     emptyOutDir: true,
+    base: 'hole-punchle',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
