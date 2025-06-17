@@ -60,7 +60,7 @@ export default function Playground() {
             <h1>Hole Punch Playground!</h1>
             <p>Use this page to explore different representations and see how a fold or punch would appear.</p>
             <div className="row justify-content-center">
-                <div className="col-3 align-self-top mt-5">
+                <div className="col-3 align-self-top my-5">
                     <FoldControls
                         onFold={updateAfterFold}
                         isFoldDisabled={isFoldValid}
@@ -82,7 +82,7 @@ export default function Playground() {
                             }
                         }
                         } disabled={currentFold === foldCount}><ArrowBigRight size={40}/></button>
-                        <button className="reset-btn col-10 mt-2" onClick={reset}>Reset</button>
+                        <button className="btn btn-primary reset-btn col-10 mt-2" onClick={reset}>Reset</button>
                     </div>
                 </div>
                 <div className="col-2 align-items-center align-self-top">
@@ -92,7 +92,7 @@ export default function Playground() {
                     />
                 </div>
                 
-                <div className="col-2 align-self-top mt-5">
+                <div className="col-2 align-self-top my-5">
                     <div className="row cols-2 justify-content-center mb-5 border-start">
                         <h2>Folds History</h2>
                         <hr/>

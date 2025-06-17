@@ -49,8 +49,9 @@ export default function Game() {
 
     function generateNewQuestion() {
         setShowAnswer(false); // Reset the answer visibility
+        clearPunches(); // Clear any active punch buttons
         const newPaper = new Paper();
-        const numFolds = Math.floor(Math.random() * 3) + 2; // Random number of folds between 1 and 4
+        const numFolds = Math.floor(Math.random() * 2) + 2; // Random number of folds between 1 and 4
         setFoldCount(numFolds);
         for (let i = 0; i < numFolds; i++){
             newPaper.addFold(generateNextFold(newPaper));
@@ -91,18 +92,23 @@ export default function Game() {
                         }
                         {foldCount >= 2 && 
                             <div className="col mx-auto">
-                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={2} displayPunches={foldCount === 2 || showAnswer} /> 
+                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={2} displayPunches={showAnswer} /> 
+                            </div> 
+                        }
+                        {foldCount === 2 && 
+                            <div className="col mx-auto">
+                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={2} displayPunches={foldCount === 2} /> 
                             </div> 
                         }
                         {foldCount >= 3 && 
                             <div className="col mx-auto">
-                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={3} displayPunches={foldCount === 3 || showAnswer} /> 
+                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={3} displayPunches={showAnswer} /> 
                             </div> 
                         }
-                        {foldCount >= 4 && 
+                        {foldCount === 3 && 
                             <div className="col mx-auto">
-                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={4} displayPunches={foldCount === 4 || showAnswer} /> 
-                            </div> 
+                                <PaperRepresentation paper={paper} canvasSize={200} foldIndex={3} displayPunches={foldCount === 3} /> 
+                            </div>
                         }
                     </div>
                     <div className="row justify-content-center mt-3">
@@ -111,25 +117,25 @@ export default function Game() {
                         </button>
                     </div>
                     <div className="row justify-content-center mt-5">
-                        <div className="col-1 text-center">
+                        <div className="text-center" style={{ width: "fit-content" }}>
                             <PunchButton punchFunction={() => activatePunch("(0,0)")} disable={() => false} id="(0,0)"/>
                             <PunchButton punchFunction={() => activatePunch("(0,1)")} disable={() => false} id="(0,1)"/>
                             <PunchButton punchFunction={() => activatePunch("(0,2)")} disable={() => false} id="(0,2)"/>
                             <PunchButton punchFunction={() => activatePunch("(0,3)")} disable={() => false} id="(0,3)"/>
                         </div>
-                        <div className="col-1 text-center">
+                        <div className="text-center" style={{ width: "fit-content" }}>
                             <PunchButton punchFunction={() => activatePunch("(1,0)")} disable={() => false} id="(1,0)"/>
                             <PunchButton punchFunction={() => activatePunch("(1,1)")} disable={() => false} id="(1,1)"/>
                             <PunchButton punchFunction={() => activatePunch("(1,2)")} disable={() => false} id="(1,2)"/>
                             <PunchButton punchFunction={() => activatePunch("(1,3)")} disable={() => false} id="(1,3)"/>
                         </div>
-                        <div className="col-1 text-center">
+                        <div className="text-center" style={{ width: "fit-content" }}>
                             <PunchButton punchFunction={() => activatePunch("(2,0)")} disable={() => false} id="(2,0)"/>
                             <PunchButton punchFunction={() => activatePunch("(2,1)")} disable={() => false} id="(2,1)"/>
                             <PunchButton punchFunction={() => activatePunch("(2,2)")} disable={() => false} id="(2,2)"/>
                             <PunchButton punchFunction={() => activatePunch("(2,3)")} disable={() => false} id="(2,3)"/>
                         </div>
-                        <div className="col-1 text-center">
+                        <div className="text-center" style={{ width: "fit-content" }}>
                             <PunchButton punchFunction={() => activatePunch("(3,0)")} disable={() => false} id="(3,0)"/>
                             <PunchButton punchFunction={() => activatePunch("(3,1)")} disable={() => false} id="(3,1)"/>
                             <PunchButton punchFunction={() => activatePunch("(3,2)")} disable={() => false} id="(3,2)"/>
@@ -140,6 +146,13 @@ export default function Game() {
             </div>
         </div>
     );
+}
+
+function clearPunches() {
+    const punchButtons = document.querySelectorAll(".punch-button-container");
+    punchButtons.forEach(button => {
+        button.classList.remove("active");
+    });
 }
 
 function activatePunch(point) {
